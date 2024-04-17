@@ -1,4 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
+// Use environmental variables
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 export const errorHandler = (
     err: Error,
@@ -22,7 +26,8 @@ export const errorHandler = (
     res.status(statusCode).json({
         error: {
             message: err.message,
-            statusCode: statusCode
+            statusCode: statusCode,
+            stack: process.env.NODE_ENV === "development" ? err.stack : null
         }
     });
 };

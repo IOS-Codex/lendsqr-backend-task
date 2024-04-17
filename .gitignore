@@ -10,4 +10,6 @@ dist/
 # Ignore environment-specific files
 .env
 
+# Ignore Knex migration files
+/migrations
 

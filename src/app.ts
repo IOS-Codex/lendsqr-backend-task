@@ -1,4 +1,5 @@
 import express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import knex from 'knex';
 import environmentConfig from '../knexfile';
@@ -10,38 +11,41 @@ dotenv.config();
 //import middlewares
 import { errorHandler } from './middleware/errorMiddleware';
 
-// Extracting Connection Variables environment configuration 
-const { connectionVariables } = environmentConfig;
+//import routes
+import userRoute from './routes/userRoutes';
+
 
 // Creating a Knex instance with the Connection Variables configuration
-const db = knex(connectionVariables);
+const db = knex(environmentConfig);
 
-// Test database connection
-db.raw('SELECT 1+1 as result')
-    .then((result: any) => {
-        console.log('Database connection successful');
+export default db;
 
-        // Creating an express app
-        const app = express();
+// Creating an express app
+const app = express();
 
 
-        // All Middlewares
+// All Middlewares
+// use middlewares
+app.use((req: Request, res: Response, next: NextFunction) => {
 
-        // Middleware to parse json data.
-        app.use(bodyParser.json());
+    next()
+})
+// Middleware to parse json data.
+app.use(bodyParser.json());
 
-        //Error handler middleware
-        app.use(errorHandler);
+//routes middleware
+app.use("/api/user", userRoute)
+
+app.get("/", (req, res) => {
+    res.send("Hey, i amd up and running")
+})
+
+//Error handler middleware
+app.use(errorHandler);
 
 
-        // Start the Express server
-        const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch((error: any) => {
-        console.error('Error connecting to the database:', error);
-        // Exit the process if there is an error connecting to the database
-        process.exit(1);
-    });
+// Start the Express server
+const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
