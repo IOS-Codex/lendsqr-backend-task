@@ -1,1 +1,13 @@
-/node_modules
+# Ignore node_modules directory
+node_modules/
+
+# Ignore npm log files
+npm-debug.log*
+
+# Ignore compiled JavaScript files
+dist/
+
+# Ignore environment-specific files
+.env
+
+
