@@ -17,7 +17,6 @@ import userRoute from './routes/userRoutes';
 
 // Creating a Knex instance with the Connection Variables configuration
 const db = knex(environmentConfig);
-
 export default db;
 
 // Creating an express app
