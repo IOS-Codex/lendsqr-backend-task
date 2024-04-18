@@ -10,20 +10,40 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
+// this function is to generate the wallet number
+function generateRandomNumber(): number {
+    return Math.floor(1000000000 + Math.random() * 9000000000); // Generates a random 10-digit number
+}
 
 // This controller manages all API requests related to wallet interactions within the app,
 // including creation of wallet, deletion of wallet, freezing wallets, and more.
 
 export const createNewWallet = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    try {
 
-        // Return success response
-        res.status(200).json({ message: 'I am an Autheticated User', });
-    } catch (error) {
-        // Handle any unexpected errors
-        console.error('Error creating new wallet:', error);
-        res.status(500).json({ message: 'Internal server error' });
+
+    let walletAddressId: number;
+    let isUnique: boolean = false;
+    walletAddressId = generateRandomNumber();
+
+    while (!isUnique) {
+
+
+        // Check if the generated wallet number already exists in the database
+        const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();
+
+        if (!existingWallet) {
+            isUnique = true;
+
+        }
     }
+
+    // Insert the new wallet into the database alongside the user's data
+    await knex('wallet_table').insert({ addressId: walletAddressId, userId: req.user.id, });
+
+
+    // Return success response
+    res.status(200).json({ message: 'Wallet created successfully', user: { addressId: walletAddressId } });
+
 });
 
 
