@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import asyncHandler from "express-async-handler";
 import jwt from 'jsonwebtoken';
-import knex from '../app'; // Assuming 'knex' is imported from the correct location
+import knex from '../app';
 
 // Use environmental variables
 import dotenv from 'dotenv';

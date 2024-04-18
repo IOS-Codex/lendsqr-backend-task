@@ -15,6 +15,7 @@ import { errorHandler } from './middleware/errorMiddleware';
 //import routes
 import userRoute from './routes/userRoutes';
 import walletRoute from './routes/walletRoutes';
+import transactionRoute from './routes/transactionRoutes';
 
 
 // Creating a Knex instance with the Connection Variables configuration
@@ -53,6 +54,7 @@ app.use(cookieParser());
 //routes middleware
 app.use("/api/user", userRoute)
 app.use("/api/wallet", walletRoute)
+app.use("/api/transaction", transactionRoute)
 
 
 
