@@ -10,8 +10,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 //funtion to generate jwt token
-const generateToken = (_id: string): string => {
-    return jwt.sign({ _id }, process.env.JWT_SECRET || '', { expiresIn: '5h' });
+const generateToken = (id: string): string => {
+    return jwt.sign({ id }, process.env.JWT_SECRET || '', { expiresIn: '5h' });
 };
 
 
@@ -103,7 +103,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response): Promi
 
         if (passwordIsCorrect) {
             // Generate JWT Token
-            const token = generateToken(user._id);
+            const token = generateToken(user.id);
 
             // Send HTTP-only cookie
             res.cookie("token", token, {
@@ -115,8 +115,8 @@ export const loginUser = asyncHandler(async (req: Request, res: Response): Promi
             });
 
             // Respond with user data and token
-            const { _id, fullName, email, mobileNumber } = user;
-            res.status(200).json({ message: 'User logged in successfully', user: { _id, fullName, email, mobileNumber, token } });
+            const { id, fullName, email, mobileNumber } = user;
+            res.status(200).json({ message: 'User logged in successfully', user: { id, fullName, email, mobileNumber, token } });
         } else {
             // Incorrect password
             res.status(401).json({ message: 'Incorrect password' });

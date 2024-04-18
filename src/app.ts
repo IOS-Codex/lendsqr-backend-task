@@ -1,6 +1,7 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import knex from 'knex';
 import environmentConfig from '../knexfile';
 
@@ -13,14 +14,20 @@ import { errorHandler } from './middleware/errorMiddleware';
 
 //import routes
 import userRoute from './routes/userRoutes';
+import walletRoute from './routes/walletRoutes';
 
 
 // Creating a Knex instance with the Connection Variables configuration
 const db = knex(environmentConfig);
 export default db;
 
+
+
+
 // Creating an express app
 const app = express();
+
+
 
 
 // All Middlewares
@@ -29,15 +36,31 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
     next()
 })
-// Middleware to parse json data.
-app.use(bodyParser.json());
+
+
+
+// Parse JSON bodies
+app.use(express.json()); // or app.use(bodyParser.json());
+
+// Parse URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Parse cookies
+app.use(cookieParser());
+
+
 
 //routes middleware
 app.use("/api/user", userRoute)
+app.use("/api/wallet", walletRoute)
 
+
+
+// Home route
 app.get("/", (req, res) => {
     res.send("Hey, i amd up and running")
 })
+
 
 //Error handler middleware
 app.use(errorHandler);

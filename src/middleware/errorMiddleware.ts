@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+
 // Use environmental variables
 import dotenv from 'dotenv';
 dotenv.config();
