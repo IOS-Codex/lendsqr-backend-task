@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import axios, { AxiosResponse } from 'axios';
 
 // Use environmental variables
 import dotenv from 'dotenv';
@@ -19,7 +20,6 @@ const generateToken = (id: string): string => {
 // including sign-up, login, password reset, OTP verification, and more.
 
 export const signUpUser = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-
     // Destructure request body
     const { fullName, email, mobileNumber, password } = req.body;
 
@@ -54,16 +54,51 @@ export const signUpUser = asyncHandler(async (req: Request, res: Response): Prom
         return;
     }
 
-    // Encrypt the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Check if the email exists on the karma list
+    const isEmailOnKarmaList = await checkEmailOnKarmaList(email);
 
-    // Insert the new user into the database
-    await knex('users_table').insert({ fullName, email, mobileNumber, password: hashedPassword });
+    if (isEmailOnKarmaList === true) {
+        res.status(400).json({ message: 'You are not allowed on our platform' });
+        return;
+    } else if (isEmailOnKarmaList === false) {
+        // Email is not present in the list, proceed with sign up
 
-    // Return success response
-    res.status(201).json({ message: 'User created successfully', user: { fullName, email, mobileNumber } });
+        // Encrypt the password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Insert the new user into the database
+        await knex('users_table').insert({ fullName, email, mobileNumber, password: hashedPassword });
+
+        // Return success response
+        res.status(201).json({ message: 'Account created successfully', user: { fullName, email, mobileNumber } });
+    } else {
+        // Error occurred while checking karma list
+        res.status(500).json({ message: 'Error checking karma list' });
+    }
 });
+
+
+// Function to check if the email exists on the karma list
+async function checkEmailOnKarmaList(email: string): Promise<boolean | undefined> {
+    try {
+        const response: AxiosResponse<any> = await axios.get(`${process.env.ADJUTOR_BASE_URL}/verification/karma/${email}`, {
+            headers: {
+                Authorization: `Bearer ${process.env.ADJUTOR_API_KEY}`
+            },
+            validateStatus: function (status) {
+                return (status >= 200 && status < 300) || status === 404; // Accept 200-299 and 404 Error codes as normal response
+                // (" The error code 404 used to indicate that an email is
+                //   not on the karmar list is actually not a good way as axios
+                // just throws it as an error")
+            }
+        });
+
+        return response.status === 200 ? true : false;
+    } catch (error) {
+        console.error('Error checking karma list:', error);
+        return undefined;
+    }
+}
 
 
 export const loginUser = asyncHandler(async (req: Request, res: Response): Promise<void> => {
