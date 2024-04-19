@@ -32,7 +32,6 @@ export const createNewWallet = asyncHandler(async (req: Request, res: Response):
         // Check if the generated wallet number already exists in the database
         const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();
 
-        console.log(existingWallet);
 
         if (!existingWallet) {
             isUnique = true;
@@ -60,6 +59,18 @@ export const createWalletPin = asyncHandler(async (req: Request, res: Response):
 
     // Destructure request body
     const { walletPin, walletAddressId } = req.body;
+
+
+    // Check if required fields are provided
+    if (!walletPin) {
+        res.status(400).json({ message: 'Enter your new pin' });
+        return;
+    }
+    if (!walletAddressId) {
+        res.status(400).json({ message: 'No wallet selected' });
+        return;
+    }
+
 
     // Check if the wallet exists in the database
     const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();

@@ -6,7 +6,7 @@ import { authenticateUser } from '../middleware/authMiddleware';
 const router = express.Router();
 
 // Route to create a new transaction
-router.get('/fund', authenticateUser, fundWallet);
+router.post('/fund', authenticateUser, fundWallet);
 
 
 
