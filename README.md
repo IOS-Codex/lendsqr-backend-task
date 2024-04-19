@@ -1,4 +1,4 @@
-# Lendsqr Backend Task
+# Lendsqr Backend Engineer Task
 
 Welcome to the Lendsqr Backend Task repository! This repository contains my codebase for the backend task of the Lendsqr Backend Engineer assessment project.
 In this README, you'll find an overview of the project and how to set it up.
@@ -50,17 +50,18 @@ To set up the wallet service locally, follow these steps:
    - Define the following variables:
      ```
      PORT=9000
-     DATABASE_URL=your_mysql_database_url
-     JWT_SECRET=your_jwt_secret
      DEV_DATABASE_HOST=your_mysql_test_database_host
      DEV_DATABASE_NAME=your_mysql_test_database_name
      DEV_DATABASE_USER=your_mysql_test_database_user
      DEV_DATABASE_PASSWORD=your_mysql_test_database_password
+     
      PROD_DATABASE_HOST=your_mysql_database_host
      PROD_DATABASE_NAME=your_mysql_database_name
      PROD_DATABASE_USER=your_mysql_database_user
      PROD_DATABASE_PASSWORD=your_mysql_database_password
+     
      JWT_SECRET=your_jwt_secret_key
+     
      ADJUTOR_BASE_URL='https://adjutor.lendsqr.com/v2'
      ADJUTOR_API_KEY=your_adjutor_api_key
      
@@ -68,19 +69,26 @@ To set up the wallet service locally, follow these steps:
 
 5. Set up the MySQL database:
    - Create a MySQL database.
-   - Update the `DATABASE_Details` in the `.env` file with your MySQL connection string.
+   - Update the `DATABASE_DETAILS` in the `.env` file with your MySQL connection string.
 
 6. Run database migrations:
    ```
    npm run knex migrate:latest
    ```
+   
+ 7. Postman Collection
+    You can explore and test the API endpoints using the Postman collection available [here](https://www.postman.com/solar-equinox-704305/workspace/lendsqr-backend-test/collection/24223563-9da02198-2e76-47b0-9787-9624da0a8205?action=share&creator=24223563).
 
-7. Start the server:
+
+8. E-R Diagram (Database)
+![Database E-R Diagram](database-e-r-diagram.png)   
+
+9. Start the server:
    ```
    npm start
    ```
 
-8. The server should now be running locally. You can access the wallet service APIs at `http://localhost:9000`.
+10. The server should now be running locally. You can access the wallet service APIs at `http://localhost:9000`.
 
 
 ## Contact
