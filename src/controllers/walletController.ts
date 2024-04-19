@@ -58,8 +58,10 @@ export const createNewWallet = asyncHandler(async (req: Request, res: Response):
 export const createWalletPin = asyncHandler(async (req: Request, res: Response): Promise<void> => {
 
     // Destructure request body
-    const { walletPin, walletAddressId } = req.body;
+    const { walletPin: pin, walletAddressId } = req.body;
 
+    // Convert pin to integer
+    const walletPin = parseInt(pin);
 
     // Check if required fields are provided
     if (!walletPin) {
@@ -87,7 +89,7 @@ export const createWalletPin = asyncHandler(async (req: Request, res: Response):
     }
 
     // Encrypt the pin
-    const hashedPin = await bcrypt.hash(walletPin, 10);
+    const hashedPin = await bcrypt.hash(walletPin.toString(), 10);
 
 
 
