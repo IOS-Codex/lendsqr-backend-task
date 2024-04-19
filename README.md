@@ -81,7 +81,7 @@ To set up the wallet service locally, follow these steps:
 
 
 8. E-R Diagram (Database)
-![Database E-R Diagram](database-e-r-diagram.png)   
+![Database E-R Diagram](database-e-r-diagram.jpeg)   
 
 9. Start the server:
    ```
