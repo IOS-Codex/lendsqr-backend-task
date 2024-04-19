@@ -17,7 +17,7 @@ dotenv.config();
 export const createNewWallet = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const walletAddressId = await generateUniqueWalletAddress();
 
-    console.log(walletAddressId)
+
 
     if (walletAddressId !== undefined) {
         // Insert the new wallet into the database alongside the user's data

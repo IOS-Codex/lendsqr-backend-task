@@ -44,13 +44,13 @@ function generateRandomNumber(): number {
 // this function is to generate and unique wallet number
 export async function generateUniqueWalletAddress(): Promise<number | undefined> {
     const walletAddressId = generateRandomNumber();
-    console.log('Generated walletAddressId:', walletAddressId);
+
 
     // Check if the generated wallet number already exists in the database
     const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();
 
     if (!existingWallet) {
-        console.log('Unique walletAddressId:', walletAddressId);
+
         return walletAddressId;
     } else {
         // Recursive call to generate a new wallet address if the current one already exists
