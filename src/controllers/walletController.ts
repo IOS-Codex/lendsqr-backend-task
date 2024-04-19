@@ -8,39 +8,37 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-// this function is to generate the wallet number
 function generateRandomNumber(): number {
-    return Math.floor(1000000000 + Math.random() * 9000000000); // Generates a random 10-digit number
+    // Generate a random number within the range of 1 billion to 10 billion
+    // This ensures the number is always 10 digits long
+    return Math.floor(Math.random() * 9000000000) + 1000000000;
+}
+
+
+// this function is to generate and unique wallet number
+async function generateUniqueWalletAddress(): Promise<number | undefined> {
+    const walletAddressId = generateRandomNumber();
+    console.log('Generated walletAddressId:', walletAddressId);
+
+    // Check if the generated wallet number already exists in the database
+    const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();
+
+    if (!existingWallet) {
+        console.log('Unique walletAddressId:', walletAddressId);
+        return walletAddressId;
+    } else {
+        // Recursive call to generate a new wallet address if the current one already exists
+        return generateUniqueWalletAddress();
+    }
 }
 
 // This controller manages all API requests related to wallet interactions within the app,
 // including creation of wallet, deletion of wallet, freezing wallets, creation of wallet pin and more.
 
 export const createNewWallet = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const walletAddressId = await generateUniqueWalletAddress();
 
-
-    let walletAddressId: number | undefined;;
-    let isUnique: boolean = false;
-
-
-
-    while (!isUnique) {
-        walletAddressId = generateRandomNumber();
-        console.log('Generated walletAddressId:', walletAddressId);
-
-
-        // Check if the generated wallet number already exists in the database
-        const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();
-
-
-        if (!existingWallet) {
-            isUnique = true;
-            console.log('Unique walletAddressId:', walletAddressId);
-        }
-    }
-
-
-
+    console.log(walletAddressId)
 
     if (walletAddressId !== undefined) {
         // Insert the new wallet into the database alongside the user's data
@@ -52,7 +50,6 @@ export const createNewWallet = asyncHandler(async (req: Request, res: Response):
         // Handle the case where a unique walletAddressId could not be generated
         res.status(500).json({ message: 'Failed to generate a unique wallet address ID' });
     }
-
 });
 
 export const createWalletPin = asyncHandler(async (req: Request, res: Response): Promise<void> => {
