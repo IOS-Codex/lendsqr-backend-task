@@ -104,6 +104,13 @@ export const transferToOtherWallet = asyncHandler(async (req: Request, res: Resp
         return;
     }
 
+    if (sourceWalletAddressId === destinationWalletAddressID) {
+        res.status(400).json({ message: 'Source and Destination Wallet cannot be the same' });
+        return;
+    }
+
+
+
     try {
         // Start a transaction
         await knex.transaction(async (trx) => {
