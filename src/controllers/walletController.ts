@@ -5,32 +5,11 @@ import bcrypt from 'bcrypt';
 
 // Use environmental variables
 import dotenv from 'dotenv';
+import { generateUniqueWalletAddress } from '../utils';
 dotenv.config();
 
 
-function generateRandomNumber(): number {
-    // Generate a random number within the range of 1 billion to 10 billion
-    // This ensures the number is always 10 digits long
-    return Math.floor(Math.random() * 9000000000) + 1000000000;
-}
 
-
-// this function is to generate and unique wallet number
-async function generateUniqueWalletAddress(): Promise<number | undefined> {
-    const walletAddressId = generateRandomNumber();
-    console.log('Generated walletAddressId:', walletAddressId);
-
-    // Check if the generated wallet number already exists in the database
-    const existingWallet = await knex('wallet_table').where('addressId', walletAddressId).first();
-
-    if (!existingWallet) {
-        console.log('Unique walletAddressId:', walletAddressId);
-        return walletAddressId;
-    } else {
-        // Recursive call to generate a new wallet address if the current one already exists
-        return generateUniqueWalletAddress();
-    }
-}
 
 // This controller manages all API requests related to wallet interactions within the app,
 // including creation of wallet, deletion of wallet, freezing wallets, creation of wallet pin and more.

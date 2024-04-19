@@ -3,17 +3,13 @@ import knex from '../app';
 import asyncHandler from "express-async-handler";
 import validator from 'validator';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import axios, { AxiosResponse } from 'axios';
 
 // Use environmental variables
 import dotenv from 'dotenv';
+import { checkEmailOnKarmaList, generateToken } from '../utils';
 dotenv.config();
 
-//funtion to generate jwt token
-const generateToken = (id: string): string => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || '', { expiresIn: '5h' });
-};
+
 
 
 // This controller manages all API requests related to user interactions within the app,
@@ -77,28 +73,6 @@ export const signUpUser = asyncHandler(async (req: Request, res: Response): Prom
     }
 });
 
-
-// Function to check if the email exists on the karma list
-async function checkEmailOnKarmaList(email: string): Promise<boolean | undefined> {
-    try {
-        const response: AxiosResponse<any> = await axios.get(`${process.env.ADJUTOR_BASE_URL}/verification/karma/${email}`, {
-            headers: {
-                Authorization: `Bearer ${process.env.ADJUTOR_API_KEY}`
-            },
-            validateStatus: function (status) {
-                return (status >= 200 && status < 300) || status === 404; // Accept 200-299 and 404 Error codes as normal response
-                // (" The error code 404 used to indicate that an email is
-                //   not on the karmar list is actually not a good way as axios
-                // just throws it as an error")
-            }
-        });
-
-        return response.status === 200 ? true : false;
-    } catch (error) {
-        console.error('Error checking karma list:', error);
-        return undefined;
-    }
-}
 
 
 export const loginUser = asyncHandler(async (req: Request, res: Response): Promise<void> => {
