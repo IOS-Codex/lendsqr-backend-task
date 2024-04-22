@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
     };
 } else {
     credentials = {
-        connectionString: `mysql://${process.env.DEV_DATABASE_USER}:${process.env.DEV_DATABASE_PASSWORD}@${process.env.DEV_DATABASE_HOST}/${process.env.DEV_DATABASE_NAME}`,
+        connectionString: `mysql://${process.env.DEV_DATABASE_USER}:${process.env.DEV_DATABASE_PASSWORD}@${process.env.DEV_DATABASE_HOST}:${process.env.PORT}/${process.env.DEV_DATABASE_NAME}`,
     };
 }
 
