@@ -2,7 +2,7 @@
   "name": "lendsqr-backend-task",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.ts",
+  "main": "dist/src/app.js",
   "scripts": {
     "build": "npm install && tsc",
     "start": "node dist/src/app.js",
