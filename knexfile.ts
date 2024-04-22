@@ -1,16 +1,11 @@
 import credentials from './src/config/db_config';
 
-// Define the types for the connection
-interface ConnectionConfig {
-  database: string;
-  user: string;
-  password: string;
-}
+
 
 // Define the types for the environment configuration
 interface EnvironmentConfig {
   client: string;
-  connection: ConnectionConfig;
+  connection: string;
   migrations: {
     tableName: string;
     directory: string;
@@ -20,11 +15,7 @@ interface EnvironmentConfig {
 // Assign values to connect with the database 
 const environmentConfig: EnvironmentConfig = {
   client: 'mysql',
-  connection: {
-    database: credentials.database,
-    user: credentials.user,
-    password: credentials.password
-  },
+  connection: credentials.connectionString,
   migrations: {
     tableName: 'knex_migrations',
     directory: './migrations',

@@ -3,10 +3,7 @@ dotenv.config();
 
 //define the types for the connection Variables
 interface DatabaseCredentials {
-    host: string;
-    database: string;
-    user: string;
-    password: string;
+    connectionString: string;
 }
 
 let credentials: DatabaseCredentials;
@@ -14,17 +11,11 @@ let credentials: DatabaseCredentials;
 //assign values to connect with the database based on connection environment
 if (process.env.NODE_ENV === 'production') {
     credentials = {
-        host: process.env.PROD_DATABASE_HOST!,
-        database: process.env.PROD_DATABASE_NAME!,
-        user: process.env.PROD_DATABASE_USER!,
-        password: process.env.PROD_DATABASE_PASSWORD!
+        connectionString: process.env.PROD_DATABASE_STRING!,
     };
 } else {
     credentials = {
-        host: process.env.DEV_DATABASE_HOST!,
-        database: process.env.DEV_DATABASE_NAME!,
-        user: process.env.DEV_DATABASE_USER!,
-        password: process.env.DEV_DATABASE_PASSWORD!
+        connectionString: `mysql://${process.env.DEV_DATABASE_USER}:${process.env.DEV_DATABASE_PASSWORD}@${process.env.DEV_DATABASE_HOST}/${process.env.DEV_DATABASE_NAME}`,
     };
 }
 

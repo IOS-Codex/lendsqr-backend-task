@@ -60,7 +60,7 @@ app.use("/api/transaction", transactionRoute)
 
 // Home route
 app.get("/", (req, res) => {
-    res.send("Hey, i amd up and running")
+    res.send("Hey, i am up and running")
 })
 
 
