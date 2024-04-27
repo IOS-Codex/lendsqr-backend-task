@@ -55,10 +55,7 @@ To set up the wallet service locally, follow these steps:
      DEV_DATABASE_USER=your_mysql_test_database_user
      DEV_DATABASE_PASSWORD=your_mysql_test_database_password
      
-     PROD_DATABASE_HOST=your_mysql_database_host
-     PROD_DATABASE_NAME=your_mysql_database_name
-     PROD_DATABASE_USER=your_mysql_database_user
-     PROD_DATABASE_PASSWORD=your_mysql_database_password
+     PROD_DATABASE_STRING=your_mysql_database_host
      
      JWT_SECRET=your_jwt_secret_key
      
