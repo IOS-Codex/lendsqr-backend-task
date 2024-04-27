@@ -62,20 +62,20 @@ export const fundWallet = asyncHandler(async (req: Request, res: Response): Prom
     }
 
 
-    // Calculate new balance
-    const newAmount = Number(amount) + existingWallet.balance;
+    await knex.transaction(async (trx) => {
+        // Calculate new balance
+        const newAmount = Number(amount) + existingWallet.balance;
 
-    // Update the wallet balance in the database 
-    const transaction = await knex('wallet_table').update({ balance: newAmount }).where('addressId', walletAddressId);
+        // Update the wallet balance in the database within the transaction
+        await trx('wallet_table').update({ balance: newAmount }).where('addressId', walletAddressId);
 
-    // Insert the transaction into the database
-    const transStatus = transaction ? 'completed' : 'failed';
-    console.log(transStatus)
+        // Insert the transaction into the database within the transaction
+        const transStatus = 'completed'; // Assuming update is successful
+        await trx('transaction_table').insert({ userId: req.user.id, walletId: existingWallet.id, transAmount: amount, transType: 'credit', transStatus: transStatus, transDate: new Date() });
 
-    await knex('transaction_table').insert({ userId: req.user.id, walletId: existingWallet.id, transAmount: amount, transType: 'credit', transStatus: transStatus, transDate: new Date() });
-
-    // Return success or failure response
-    res.status(200).json({ message: 'Wallet funded successfully' });
+        // Return success response
+        res.status(200).json({ message: 'Wallet funded successfully' });
+    });
 
 });
 
@@ -128,7 +128,7 @@ export const transferToOtherWallet = asyncHandler(async (req: Request, res: Resp
                 return;
             }
 
-            // Check if source wallet has enough balance
+            // Check if source  wallet has enough balance
             if (existingWallet.balance < amount) {
                 res.status(400).json({ message: 'Insufficient funds' });
                 return;
@@ -237,18 +237,19 @@ export const withdrawFromWallet = asyncHandler(async (req: Request, res: Respons
         return;
     }
 
-    // Calculate new balance
-    const newAmount = existingWallet.balance - Number(amount);
+    await knex.transaction(async (trx) => {
+        // Calculate new balance
+        const newAmount = existingWallet.balance - Number(amount);
 
-    // Update the wallet balance in the database 
-    const transaction = await knex('wallet_table').update({ balance: newAmount }).where('addressId', walletAddressId);
+        // Update the wallet balance in the database within the transaction
+        await trx('wallet_table').update({ balance: newAmount }).where('addressId', walletAddressId);
 
-    // Insert the transaction into the database
-    const transStatus = transaction ? 'completed' : 'failed';
+        // Insert the transaction into the database within the transaction
+        const transStatus = 'completed'; // Assuming update is successful
+        await trx('transaction_table').insert({ userId: req.user.id, walletId: existingWallet.id, transAmount: amount, transType: 'debit', transStatus: transStatus, transDate: new Date() });
 
-    await knex('transaction_table').insert({ userId: req.user.id, walletId: existingWallet.id, transAmount: amount, transType: 'debit', transStatus: transStatus, transDate: new Date() });
-
-    // Return success or failure response
-    res.status(200).json({ message: 'Wallet withdrawal successfull' });
+        // Return success response
+        res.status(200).json({ message: 'Wallet withdrawal successful' });
+    });
 
 });

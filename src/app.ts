@@ -65,6 +65,9 @@ app.get("/", (req, res) => {
 //Error handler middleware
 app.use(errorHandler);
 
+
+
+
 // Start the Express server after testing database connection
 async function startServer() {
     const isConnected = await testDatabaseConnection();
