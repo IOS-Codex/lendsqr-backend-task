@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import knex from '../app';
 import asyncHandler from "express-async-handler";
+import bcrypt from 'bcrypt';
+
 
 // Use environmental variables
 import dotenv from 'dotenv';
@@ -13,7 +15,7 @@ dotenv.config();
 
 export const fundWallet = asyncHandler(async (req: Request, res: Response): Promise<void> => {
 
-    //no collecting funding source and verifiying the transaction because i think its not within the scope of the assessment.
+    //not collecting funding source and verifiying the transaction because i think its not within the scope of the assessment.
 
     // Destructure request body
     const { amount, walletAddressId, walletPin: pin } = req.body;
@@ -55,8 +57,12 @@ export const fundWallet = asyncHandler(async (req: Request, res: Response): Prom
         return;
     }
 
+
+
     //check if pin is correct
-    if (existingWallet.walletPin !== walletPin) {
+    const walletPinIsCorrect = await bcrypt.compare(pin, existingWallet.walletPin);
+
+    if (!walletPinIsCorrect) {
         res.status(400).json({ message: 'Incorrect wallet pin' });
         return;
     }
@@ -140,9 +146,11 @@ export const transferToOtherWallet = asyncHandler(async (req: Request, res: Resp
                 return;
             }
 
-            // Check if pin is correct
-            if (existingWallet.walletPin !== walletPin) {
-                res.status(400).json({ message: 'Incorrect Wallet pin' });
+            //check if pin is correct
+            const walletPinIsCorrect = await bcrypt.compare(pin, existingWallet.walletPin);
+
+            if (!walletPinIsCorrect) {
+                res.status(400).json({ message: 'Incorrect wallet pin' });
                 return;
             }
 
@@ -221,12 +229,14 @@ export const withdrawFromWallet = asyncHandler(async (req: Request, res: Respons
 
     //check if pin has been created
     if (existingWallet.walletPin === null) {
-        res.status(400).json({ message: 'You need to create a Wallet pin to witdraw from your wallet' });
+        res.status(400).json({ message: 'You need to create a Wallet pin to withdraw from your wallet' });
         return;
     }
 
     //check if pin is correct
-    if (existingWallet.walletPin !== walletPin) {
+    const walletPinIsCorrect = await bcrypt.compare(pin, existingWallet.walletPin);
+
+    if (!walletPinIsCorrect) {
         res.status(400).json({ message: 'Incorrect wallet pin' });
         return;
     }

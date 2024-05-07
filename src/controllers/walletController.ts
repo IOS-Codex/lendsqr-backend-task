@@ -70,7 +70,7 @@ export const createWalletPin = asyncHandler(async (req: Request, res: Response):
 
 
     // Update the wallet column with the wallet pin in the database 
-    await knex('wallet_table').update({ walletPin: walletPin }).where('addressId', walletAddressId);
+    await knex('wallet_table').update({ walletPin: hashedPin }).where('addressId', walletAddressId);
 
 
     // Return success response
